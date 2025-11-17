@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "frontend/dist"
+
+[context]
+  # If you prefer to set a base directory in Netlify UI, you can set
+  # `base = "frontend"` and then use `npm run build` (which will run
+  # inside that folder). The root config above keeps the build command
+  # at repo root and delegates to the frontend package.

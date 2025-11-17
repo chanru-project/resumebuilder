@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import resumeRoutes from './routes/resumeRoutes.js';
 import certificateRoutes from './routes/certificateRoutes.js';
@@ -14,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
@@ -22,6 +23,17 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Static file serving
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+
+// Serve frontend build (production) so frontend and backend are on same origin
+const frontendDistPath = path.join(__dirname, '../../frontend/dist');
+if (process.env.NODE_ENV === 'production' || fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+
+  // SPA fallback to index.html
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendDistPath, 'index.html'));
+  });
+}
 
 // Routes
 app.use('/api/resume', resumeRoutes);

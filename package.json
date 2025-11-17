@@ -4,9 +4,8 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
-    "install:all": "npm install --prefix frontend && npm install --prefix backend",
-    "build": "npm run build --prefix frontend"
-    ,
+    "install:all": "npm ci --prefix frontend || npm install --prefix frontend && npm ci --prefix backend || npm install --prefix backend",
+    "build": "npm run install:all && npm run build --prefix frontend",
     "start:prod": "npm run build --prefix frontend && npm run start --prefix backend"
   },
   "devDependencies": {
